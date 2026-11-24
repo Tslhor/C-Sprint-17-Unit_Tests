@@ -40,7 +40,8 @@ public class ProductControllerTests
     public void Index_WithoutSearchString_ReturnsAllProductsWithCategoriesAndDoesNotCallService()
     {
         using var context = TestDbContextFactory.Create();
-        context.Categories.Add(new Category { Id = 1, Name = "Electronics" });
+        var category = new Category { Id = 1, Name = "Electronics" };
+        context.Categories.Add(category);
         context.Products.AddRange(
             new Product { Id = 1, Name = "Laptop", Price = 999.99m, CategoryId = 1 },
             new Product { Id = 2, Name = "Smartphone", Price = 599.99m, CategoryId = 1 });
@@ -56,8 +57,9 @@ public class ProductControllerTests
 
         Assert.That(viewResult, Is.Not.Null);
         Assert.That(model, Is.Not.Null);
-        Assert.That(model!.Count(), Is.EqualTo(2));
-        Assert.That(model.All(p => p.Category != null && p.Category.Name == "Electronics"), Is.True);
+        var products = model!.ToList();
+        Assert.That(products, Has.Count.EqualTo(2));
+        Assert.That(products.All(p => p.Category != null && p.Category.Name == "Electronics"), Is.True);
         serviceMock.Verify(s => s.SearchProductsByName(It.IsAny<string>()), Times.Never);
     }
 

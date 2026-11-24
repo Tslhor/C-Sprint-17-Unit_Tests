@@ -28,23 +28,23 @@ namespace OrderSystem.Services
 
         public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {
-            return _dbContext.Products.Where(p => p.CategoryId == categoryId).ToList();
+            return _dbContext.Products.Where(p => p.CategoryId == categoryId);
         }
 
         public IEnumerable<Product> GetProductsSorted(string sortField)
         {
             var normalizedField = string.IsNullOrWhiteSpace(sortField) ? nameof(Product.Id) : sortField;
 
-            var validSortField = normalizedField switch
+            var validField = normalizedField switch
             {
                 nameof(Product.Id) => nameof(Product.Id),
                 nameof(Product.Name) => nameof(Product.Name),
                 nameof(Product.Price) => nameof(Product.Price),
                 nameof(Product.CategoryId) => nameof(Product.CategoryId),
-                _ => throw new ArgumentException($"Invalid sort field '{sortField}'.", nameof(sortField))
+                _ => throw new ArgumentException($"Invalid sort field: '{sortField}'.", nameof(sortField))
             };
 
-            return _dbContext.Products.OrderBy(p => EF.Property<object>(p, validSortField)).ToList();
+            return _dbContext.Products.OrderBy(p => EF.Property<object>(p, validField)).ToList();
         }
 
         public IEnumerable<Product> SearchProducts(string searchTerm)

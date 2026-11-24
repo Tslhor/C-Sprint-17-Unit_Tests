@@ -83,29 +83,29 @@ public class ProductServiceTests
     }
 
     [Test]
-    public void GetProductsSorted_WhenSortFieldIsNullOrEmpty_DefaultsToId()
-    {
-        using var context = TestDbContextFactory.Create();
-        SeedProducts(context);
-        var service = new ProductService(context);
-
-        var result = service.GetProductsSorted(string.Empty).Select(p => p.Id).ToList();
-
-        Assert.That(result, Is.EqualTo(new[] { 1, 2, 3 }));
-    }
-
-    [Test]
     public void GetProductsSorted_WhenSortFieldIsInvalid_ThrowsArgumentException()
     {
         using var context = TestDbContextFactory.Create();
         SeedProducts(context);
         var service = new ProductService(context);
 
-        Assert.Throws<ArgumentException>(() => service.GetProductsSorted("NonExistentField"));
+        Assert.Throws<ArgumentException>(() => service.GetProductsSorted("InvalidField"));
     }
 
     [Test]
-    public void SearchProducts_WhenSearchTermMatchesCaseInsensitively_ReturnsMatchingProducts()
+    public void GetProductsSorted_WhenSortFieldIsNullOrWhiteSpace_DefaultsToIdOrder()
+    {
+        using var context = TestDbContextFactory.Create();
+        SeedProducts(context);
+        var service = new ProductService(context);
+
+        var result = service.GetProductsSorted(" ").Select(p => p.Id).ToList();
+
+        Assert.That(result, Is.EqualTo(new[] { 1, 2, 3 }));
+    }
+
+    [Test]
+    public void SearchProducts_WhenSearchTermMatches_ReturnsCaseInsensitiveMatches()
     {
         using var context = TestDbContextFactory.Create();
         SeedProducts(context);

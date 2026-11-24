@@ -17,7 +17,7 @@ public class ProductValidationTests
         Assert.That(result.Errors.Any(e => e.MemberNames.Contains(nameof(Product.Name))), Is.True);
     }
 
-    [TestCase(0.0)]
+    [TestCase(0)]
     [TestCase(1000.01)]
     public void Product_WhenPriceIsOutOfRange_IsInvalid(decimal price)
     {
@@ -30,7 +30,7 @@ public class ProductValidationTests
     }
 
     [TestCase(0.01)]
-    [TestCase(50.00)]
+    [TestCase(50)]
     [TestCase(1000.00)]
     public void Product_WhenNameAndPriceAreValid_IsValid(decimal price)
     {
